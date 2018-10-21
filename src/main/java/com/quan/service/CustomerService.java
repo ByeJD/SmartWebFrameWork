@@ -63,31 +63,33 @@ public class CustomerService {
     }
 
     public List<Customer> getCustomerList() {
-        String sql = "select * from demo";
-        List<Customer> customers = DatabaseHelper.queryEntityList(Customer.class, sql, null);
+        String sql = "select * from Customer";
+        List<Customer> customers = DatabaseHelper.queryEntityList(Customer.class, sql);
         return customers;
     }
 
 
     public Customer getCustomer(long id) {
-        return null;
+        String sql = "select * from Customer where id = " + id;
+        Customer customer =  DatabaseHelper.queryEntity(Customer.class,sql);
+        return customer;
     }
 
     public boolean createCustomer(Map<String, Object> fieldMap) {
-        return false;
+        return DatabaseHelper.insertEntity(Customer.class,fieldMap);
     }
 
     public boolean updateCustomer(long id, Map<String, Object> fieldMap) {
-        return false;
+        return DatabaseHelper.updateEntity(Customer.class,id,fieldMap);
     }
 
     public boolean deleteCustomer(long id) {
-        return false;
+        return DatabaseHelper.deleteEntity(Customer.class,id);
     }
 
     public static void main(String[] args) {
 
         CustomerService customerService = new CustomerService();
-        customerService.getCustomerListA();
+        System.out.println(customerService.getCustomerList().size());
     }
 }

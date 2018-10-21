@@ -12,11 +12,8 @@ import java.util.Map;
 
 public class CustomerServiceTest {
 
-    private final CustomerService customerService;
+    private final CustomerService customerService = new CustomerService();
 
-    public CustomerServiceTest(CustomerService customerService) {
-        this.customerService = customerService;
-    }
 
     @Before
     public void setUp() throws Exception {
