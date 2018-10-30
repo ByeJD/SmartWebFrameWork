@@ -2,6 +2,7 @@ package com.quan.common;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
@@ -9,6 +10,9 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,7 +23,8 @@ public class DatabaseHelper {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseHelper.class);
 
     private static final QueryRunner QUERY_RUNNER = new QueryRunner();
-    private static final ThreadLocal<Connection> CONNECTION_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<Connection> CONNECTION_THREAD_LOCAL;
+    private static final BasicDataSource DATA_SOURCE;
 
     private static final String DRIVER;
     private static final String URL;
@@ -27,6 +32,9 @@ public class DatabaseHelper {
     private static final String PASSWORD;
 
     static {
+
+        CONNECTION_THREAD_LOCAL = new ThreadLocal<>();
+
         Properties conf = PropsUtil.loadProps("config.properties");
 
         DRIVER = PropsUtil.getString(conf, "jdbc.driver");
@@ -39,6 +47,12 @@ public class DatabaseHelper {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        DATA_SOURCE = new BasicDataSource();
+        DATA_SOURCE.setDriverClassName(DRIVER);
+        DATA_SOURCE.setUrl(URL);
+        DATA_SOURCE.setUsername(USERNAME);
+        DATA_SOURCE.setPassword(PASSWORD);
     }
 
     public static Connection getConnection() {
@@ -47,7 +61,7 @@ public class DatabaseHelper {
 
         if (connection == null) {
             try {
-                connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+                connection = DATA_SOURCE.getConnection();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
@@ -57,19 +71,7 @@ public class DatabaseHelper {
 
         return connection;
     }
-
-    public static void closeConnection() {
-        Connection connection = CONNECTION_THREAD_LOCAL.get();
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                CONNECTION_THREAD_LOCAL.remove();
-            }
-        }
-    }
+    
 
 
     public static <T> T queryEntity(Class<T> entityClass, String sql, Object... params) {
@@ -79,9 +81,7 @@ public class DatabaseHelper {
             entity = QUERY_RUNNER.query(connection, sql, new BeanHandler<>(entityClass), params);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
-        }
+        } 
         return entity;
     }
 
@@ -93,9 +93,7 @@ public class DatabaseHelper {
             entityList = QUERY_RUNNER.query(connection, sql, new BeanListHandler<T>(entityClass), params);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
-        }
+        } 
         return entityList;
     }
 
@@ -115,9 +113,7 @@ public class DatabaseHelper {
             result = QUERY_RUNNER.query(connection, sql, new MapListHandler(), params);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
-        }
+        } 
         return result;
     }
 
@@ -130,9 +126,7 @@ public class DatabaseHelper {
             rows = QUERY_RUNNER.update(connection, sql, params);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
-        }
+        } 
         return rows;
     }
 
@@ -192,7 +186,20 @@ public class DatabaseHelper {
         return executeUpdate(sql,id) == 1;
     }
 
+    public static void executeSqlFile(String filePath) throws Exception{
+        InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(filePath);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
+        String sql;
+        while ((sql=bufferedReader.readLine()) != null){
+            DatabaseHelper.executeUpdate(sql);
+        }
 
+        if(is != null){
+            is.close();
+        }
 
-
+        if(bufferedReader != null){
+            bufferedReader.close();
+        }
+    }
 }

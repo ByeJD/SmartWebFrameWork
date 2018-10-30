@@ -1,11 +1,16 @@
 package com.quan.service;
 
+import com.quan.common.DatabaseHelper;
 import com.quan.model.Customer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +22,8 @@ public class CustomerServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        //todo: 初始化数据库
+        String file = "customer_init.sql";
+        DatabaseHelper.executeSqlFile(file);
     }
 
     @After
