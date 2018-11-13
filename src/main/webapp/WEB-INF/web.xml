@@ -4,4 +4,17 @@
          version="3.0">
 
   <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+    <!--servlet的名字-->
+    <servlet-name>MyServlet</servlet-name>
+    <!--servlet类的名字（包括完整包名）-->
+    <servlet-class>com.quan.frame.DispathcherServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <!--要与上面的那个名字一一对应-->
+    <servlet-name>MyServlet</servlet-name>
+    <!--表示该servlet的访问路径 /表示项目的根目录-->
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
 </web-app>
