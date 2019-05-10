@@ -38,29 +38,33 @@ public class ReflectionUtil {
         return result;
     }
 
-    public static Object invokeMethod(Object object, Method method, Param param) {
-        Object result;
-        Object[] args = null;
-
-        LinkedHashMap<String, Object> paramMap = param.getParamMap();
-        if (MapUtils.isNotEmpty(paramMap)) {
-            args = new Object[param.getParamMap().size()];
-            int i = 0;
-            for(Map.Entry<String,Object> entry: paramMap.entrySet()){
-                args[i] = entry.getValue();
-                i++;
-            }
-        }
-
-
-        try {
-            method.setAccessible(true);
-            result = method.invoke(object, args);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return result;
-    }
+//    public static Object invokeMethod(Object object, Method method, Param param) {
+//        Object result;
+//        Object[] args = null;
+//
+//        LinkedHashMap<String, Object> paramMap = param.getParamMap();
+//        if (MapUtils.isNotEmpty(paramMap)) {
+//            args = new Object[param.getParamMap().size()];
+//            int i = 0;
+//            for(Map.Entry<String,Object> entry: paramMap.entrySet()){
+//                args[i] = entry.getValue();
+//                i++;
+//            }
+//        }
+//
+//
+//        try {
+//            method.setAccessible(true);
+//            if (args == null){
+//                return method.invoke(object);
+//            }else {
+//                result = method.invoke(object, args);
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        return result;
+//    }
 
     public static void setField(Object object, Field field, Object value) {
         try {

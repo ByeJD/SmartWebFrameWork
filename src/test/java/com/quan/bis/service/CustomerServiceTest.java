@@ -18,8 +18,8 @@ public class CustomerServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        String file = "customer_init.sql";
-        DatabaseHelper.executeSqlFile(file);
+//        String file = "customer_init.sql";
+//        DatabaseHelper.executeSqlFile(file);
     }
 
     @After

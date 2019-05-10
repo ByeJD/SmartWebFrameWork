@@ -1,5 +1,6 @@
 package com.quan.bis.service;
 
+import com.quan.frame.annotation.Service;
 import com.quan.frame.common.DatabaseHelper;
 import com.quan.frame.common.PropsUtil;
 import com.quan.bis.model.Customer;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+@Service
 public class CustomerService {
 
     private static final String DRIVER;
