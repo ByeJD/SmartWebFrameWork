@@ -1,6 +1,7 @@
 package com.quan.bis.service;
 
 import com.quan.frame.annotation.Service;
+import com.quan.frame.annotation.Transaction;
 import com.quan.frame.common.DatabaseHelper;
 import com.quan.frame.common.PropsUtil;
 import com.quan.bis.model.Customer;
@@ -77,14 +78,17 @@ public class CustomerService {
         return customer;
     }
 
+    @Transaction
     public boolean createCustomer(Map<String, Object> fieldMap) {
         return DatabaseHelper.insertEntity(Customer.class,fieldMap);
     }
 
+    @Transaction
     public boolean updateCustomer(long id, Map<String, Object> fieldMap) {
         return DatabaseHelper.updateEntity(Customer.class,id,fieldMap);
     }
 
+    @Transaction
     public boolean deleteCustomer(long id) {
         return DatabaseHelper.deleteEntity(Customer.class,id);
     }

@@ -1,9 +1,12 @@
 package com.quan.frame.common;
 
 import com.quan.frame.annotation.Aspect;
+import com.quan.frame.annotation.Service;
+import com.quan.frame.annotation.Transaction;
 import com.quan.frame.proxy.AspectProxy;
 import com.quan.frame.proxy.Proxy;
 import com.quan.frame.proxy.ProxyManager;
+import com.quan.frame.proxy.TransactionProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +34,9 @@ public class AopHelper {
 
     private static Set<Class<?>> createTargetClassSet(Aspect aspect) {
         Set<Class<?>> targetClassSet = new HashSet<>();
-        Class<? extends Annotation> annatation = aspect.value();
-        if (annatation != null && !annatation.equals(Aspect.class)) {
-            targetClassSet.addAll(ClassHelper.getClassSetByAnnatation(annatation));
+        Class<? extends Annotation> annotation = aspect.value();
+        if (annotation != null && !annotation.equals(Aspect.class)) {
+            targetClassSet.addAll(ClassHelper.getClassSetByAnnatation(annotation));
         }
 
         return targetClassSet;
@@ -41,6 +44,19 @@ public class AopHelper {
 
     private static Map<Class<?>, Set<Class<?>>> createProxyMap() {
         Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<>();
+        addAspectProxy(proxyMap);
+        addTransactionProxy(proxyMap);
+
+        return proxyMap;
+    }
+
+    private static void addTransactionProxy(Map<Class<?>, Set<Class<?>>> proxyMap) {
+        Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnatation(Service.class);
+        proxyMap.put(TransactionProxy.class,serviceClassSet);
+
+    }
+
+    private static void addAspectProxy(Map<Class<?>, Set<Class<?>>> proxyMap){
         Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);
         for (Class<?> proxyClass : proxyClassSet) {
             if (proxyClass.isAnnotationPresent(Aspect.class)) {
@@ -49,8 +65,6 @@ public class AopHelper {
                 proxyMap.put(proxyClass, targetClassSet);
             }
         }
-
-        return proxyMap;
     }
 
     private static Map<Class<?>, List<Proxy>> createTargetMap(Map<Class<?>, Set<Class<?>>> proxyMap) throws IllegalAccessException, InstantiationException {

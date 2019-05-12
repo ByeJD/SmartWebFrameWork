@@ -200,4 +200,49 @@ public class DatabaseHelper {
             bufferedReader.close();
         }
     }
+
+    public static void beginTransaction(){
+        Connection connection = getConnection();
+        if (connection != null){
+            try {
+                connection.setAutoCommit(false);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                CONNECTION_THREAD_LOCAL.set(connection);
+            }
+        }
+    }
+
+    /**
+     * 提交事务
+     */
+    public static void commitTransaction(){
+        Connection connection = getConnection();
+        if (connection != null){
+            try {
+                connection.commit();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
+
+    public static void rollBackTransaction(){
+        Connection connection = getConnection();
+        if (connection != null){
+            try {
+                connection.rollback();
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }finally {
+                CONNECTION_THREAD_LOCAL.remove();
+            }
+        }
+    }
 }
