@@ -3,6 +3,11 @@ package com.quan.frame.bean;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.sql.SQLException;
+
 public class Request {
 
     private String requestMethod;
@@ -50,6 +55,19 @@ public class Request {
                 .append(requestMethod)
                 .append(requestPath)
                 .toHashCode();
+    }
+
+    public static void main(String[] args) {
+
+        BeanInfo beanInfo = null;
+
+        try {
+            beanInfo = Introspector.getBeanInfo(Request.class);
+        } catch (IntrospectionException var4) {
+
+        }
+
+        System.out.println(beanInfo.getPropertyDescriptors());
     }
 
 }
