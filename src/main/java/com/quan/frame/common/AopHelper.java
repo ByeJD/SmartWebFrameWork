@@ -50,13 +50,23 @@ public class AopHelper {
         return proxyMap;
     }
 
-    private static void addTransactionProxy(Map<Class<?>, Set<Class<?>>> proxyMap) {
+    /**
+     * 找到所有的@Service注解, 事务代理类和Service注解的Map
+     * @param proxyMap
+     */
+    private static void addTransactionProxy(Map<Class<?> , Set<Class<?>>> proxyMap) {
         Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnatation(Service.class);
         proxyMap.put(TransactionProxy.class,serviceClassSet);
-
     }
 
+
+    /**
+     *
+     * @param proxyMap
+     */
     private static void addAspectProxy(Map<Class<?>, Set<Class<?>>> proxyMap){
+
+        // 原始类
         Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);
         for (Class<?> proxyClass : proxyClassSet) {
             if (proxyClass.isAnnotationPresent(Aspect.class)) {
