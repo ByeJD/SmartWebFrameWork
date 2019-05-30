@@ -87,6 +87,55 @@ public class Test1 {
     }
 
 
+    @Test
+    public void regularExpression(){
+        String str= "1+2";
+
+        // 已数字分割
+        String[] temp = str.split("\\d");
+
+
+        Stream.of(temp).forEach(System.out::println);
+    }
+
+
+
+    @Test
+    public void mapCount(){
+        String line = "I am from China . My name is liuquanquan. I like play badminton . This is a ";
+
+        // 打印字符长度大于7字符串
+        Stream.of(line.split(" ")).filter(data->data.length() > 7).forEach(System.out::println);
+        // 打印字符长度大于7的字符串的个数
+        System.out.println(Stream.of(line.split(" ")).filter(data -> data.length() > 7).count());
+
+        // 统计每个字符出现的次数
+        List<String> list = Arrays.asList(line.split(" "));
+        HashMap<String,Integer> map = new HashMap<>();
+        list.forEach(item->{
+             map.computeIfPresent(item,(key,value)->value + 1);
+             map.putIfAbsent(item,1);
+         });
+        System.out.println("*****************************");
+        map.forEach((k,v)-> System.out.println(k + " , " + v));
+
+        HashMap<String,Integer> map2 = new HashMap<>();
+        for (int i = 0; i < list.size(); i++) {
+            String key = list.get(i);
+            if (map2.containsKey(key)){
+                int count = map2.get(key);
+                map2.put(key,count + 1);
+                // 错误
+                map2.put(key,count++);
+
+                // map2.put(key,++count);
+            }else {
+                map2.put(key,1);
+            }
+        }
+    }
+
+
 
 
 
